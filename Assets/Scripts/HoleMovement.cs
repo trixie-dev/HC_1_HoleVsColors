@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class HoleMovement : MonoBehaviour
@@ -13,6 +14,8 @@ public class HoleMovement : MonoBehaviour
     [SerializeField] private Vector2 moveLimit;
     [SerializeField] private float radius = 0.5f;
     [SerializeField] private Transform holeCenter;
+    //rotating circle arround hole (animation)
+    [SerializeField] Transform rotatingCircle;
 
     [Space]
     [SerializeField] private float moveSpeed;
@@ -33,19 +36,52 @@ public class HoleMovement : MonoBehaviour
         
         _mesh = meshFilter.mesh;
         
+        RotateCircleAnim();
         FindHoleVertices();
     }
 
     void Update()
     {
-        Game.IsMoving = Input.GetMouseButton(0);
+        #if UNITY_EDITOR 
+            //isMoving=true whenever mouse is clicked 
+            //isMoving=falseever mouse is released
+            Game.IsMoving = Input.GetMouseButton (0);
 
-        if (!Game.IsGameOver && Game.IsMoving)
-        {
-            MoveHole();
-            UpdateHoleVerticesPosition();
-        }
+            if (!Game.IsGameOver && Game.IsMoving) {
+                //Move hole center
+                MoveHole ();
+                //Update hole vertices
+                UpdateHoleVerticesPosition ();
+            }
+
+
+        //Touch
+        #else
+		    //TouchPhase.Moved to prevent hole from jumping at first touch
+		    Game.isMoving = Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Moved;
+
+		    if (!Game.isGameover && Game.isMoving) {
+		    //Move hole center
+		    MoveHole ();
+		    //Update hole vertices
+		    UpdateHoleVerticesPosition ();
+		    }
+        #endif
     }
+    
+    void RotateCircleAnim ()
+    {
+        //rotate circle arround Y axis by -90°
+        //duration: 0.2 seconds
+        //start: Vector3 (90f, 0f, 0f)
+        //loop: -1 (infinite)
+        rotatingCircle
+            .DORotate (new Vector3 (90f, 0f, -90f), .2f)
+            .SetEase (Ease.Linear)
+            .From (new Vector3 (90f, 0f, 0f))
+            .SetLoops (-1, LoopType.Incremental);
+    }
+
 
     private void UpdateHoleVerticesPosition()
     {
