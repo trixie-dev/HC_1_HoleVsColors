@@ -8,7 +8,7 @@ public class Magnet : MonoBehaviour
 
     public static Magnet Instance;
 
-    void Awake ()
+    public void InitializeSingleton ()
     {
         if (Instance == null) {
             Instance = this;
@@ -24,7 +24,7 @@ public class Magnet : MonoBehaviour
     List<Rigidbody> affectedRigidbodies = new List<Rigidbody> ();
     Transform magnet;
 
-    void Start ()
+    public void Initialize ()
     {
         magnet = transform;
         affectedRigidbodies.Clear ();

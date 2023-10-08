@@ -10,7 +10,7 @@ public class UIManager : MonoBehaviour
 
     public static UIManager Instance;
 
-    void Awake ()
+    public void InitializeSingleton ()
     {
         if (Instance == null) {
             Instance = this;
@@ -21,7 +21,6 @@ public class UIManager : MonoBehaviour
 
     [Header ("Level Progress UI")]
     //sceneOffset: because you may add other scenes like (Main menu, ...)
-    [SerializeField] int sceneOffset;
     [SerializeField] TMP_Text nextLevelText;
     [SerializeField] TMP_Text currentLevelText;
     [SerializeField] Image progressFillImage;
@@ -33,7 +32,7 @@ public class UIManager : MonoBehaviour
     //white fading panel at the start
     [SerializeField] Image fadePanel;
 
-    void Start ()
+    public void Initialize ()
     {
         FadeAtStart ();
 
@@ -45,14 +44,14 @@ public class UIManager : MonoBehaviour
 
     void SetLevelProgressText ()
     {
-        int level = SceneManager.GetActiveScene ().buildIndex + sceneOffset;
+        int level = GameManager.Instance.CurrentLevel;
         currentLevelText.text = level.ToString ();
         nextLevelText.text = (level + 1).ToString ();
     }
 
     public void UpdateLevelProgress ()
     {
-        float val = 1f - ((float)Level.Instance.objectsInScene / Level.Instance.totalObjects);
+        float val = 1f - ((float)GameManager.Instance.objectsInScene / GameManager.Instance.totalObjects);
         //transition fill (0.4 seconds)
         progressFillImage.DOFillAmount (val, .4f);  
     }

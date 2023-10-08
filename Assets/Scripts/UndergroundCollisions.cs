@@ -12,7 +12,7 @@ public class UndergroundCollisions: MonoBehaviour
         
         if (other.gameObject.CompareTag("Object"))
         {
-            Level.Instance.objectsInScene--;
+            GameManager.Instance.objectsInScene--;
             UIManager.Instance.UpdateLevelProgress ();
 
             //Make sure to remove this object from Magnetic field
@@ -21,10 +21,10 @@ public class UndergroundCollisions: MonoBehaviour
             Destroy (other.gameObject);
 
             //check if win
-            if (Level.Instance.objectsInScene == 0) {
+            if (GameManager.Instance.objectsInScene == 0) {
                 //no more objects to collect (WIN)
                 UIManager.Instance.ShowLevelCompletedUI ();
-                Level.Instance.PlayWinFx ();
+                GameManager.Instance.PlayWinFx ();
 
                 //Load Next level after 2 seconds
                 Invoke ("NextLevel", 2f);
@@ -40,13 +40,13 @@ public class UndergroundCollisions: MonoBehaviour
                 .DOShakePosition (1f, .2f, 20, 90f)
                 .OnComplete (() => {
                     //restart level after shaking complet
-                    Level.Instance.RestartLevel ();
+                    GameManager.Instance.RestartLevel ();
                 });
         }
     }
     
     void NextLevel ()
     {
-        Level.Instance.LoadNextLevel ();
+        GameManager.Instance.LoadNextLevel ();
     }
 }
